@@ -1,0 +1,571 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="The Hill">The Hill</option>
+                                
+                                    <option value="Hod Putt">Hod Putt</option>
+                                
+                                    <option value="Ollie McGee">Ollie McGee</option>
+                                
+                                    <option value="Fletcher McGee">Fletcher McGee</option>
+                                
+                                    <option value="Chase Henry">Chase Henry</option>
+                                
+                                    <option value="Harry Carey Goodhue">Harry Carey Goodhue</option>
+                                
+                                    <option value="Judge Somers">Judge Somers</option>
+                                
+                                    <option value="Kinsey Keene">Kinsey Keene</option>
+                                
+                                    <option value="Benjamin Pantier">Benjamin Pantier</option>
+                                
+                                    <option value="Mrs. Benjamin Pantier">Mrs. Benjamin Pantier</option>
+                                
+                                    <option value="Reuben Pantier">Reuben Pantier</option>
+                                
+                                    <option value="Emily Sparks">Emily Sparks</option>
+                                
+                                    <option value="Trainor, the Druggist">Trainor, the Druggist</option>
+                                
+                                    <option value="Daisy Fraser">Daisy Fraser</option>
+                                
+                                    <option value="Minerva Jones">Minerva Jones</option>
+                                
+                                    <option value="'Indignation' Jones">'Indignation' Jones</option>
+                                
+                                    <option value="Doctor Meyers">Doctor Meyers</option>
+                                
+                                    <option value="Mrs Meyers">Mrs Meyers</option>
+                                
+                                    <option value="'Butch' Weldy">'Butch' Weldy</option>
+                                
+                                    <option value="Knowlt Hoheimer">Knowlt Hoheimer</option>
+                                
+                                    <option value="Lydia Puckett">Lydia Puckett</option>
+                                
+                                    <option value="Frank Drummer">Frank Drummer</option>
+                                
+                                    <option value="Hare Drummer">Hare Drummer</option>
+                                
+                                    <option value="Doc Hill">Doc Hill</option>
+                                
+                                    <option value="Andy The Night-Watch">Andy The Night-Watch</option>
+                                
+                                    <option value="Percy Bysshe Shelley">Percy Bysshe Shelley</option>
+                                
+                                    <option value="Zenas Witt">Zenas Witt</option>
+                                
+                                    <option value="The Town Marshal">The Town Marshal</option>
+                                
+                                    <option value="Jack McGuire">Jack McGuire</option>
+                                
+                                    <option value="Dorcas Gustine">Dorcas Gustine</option>
+                                
+                                    <option value="Nicholas Bindle">Nicholas Bindle</option>
+                                
+                                    <option value="Margaret Fuller Slack">Margaret Fuller Slack</option>
+                                
+                                    <option value="Lois Spears">Lois Spears</option>
+                                
+                                    <option value="Justice Arnett">Justice Arnett</option>
+                                
+                                    <option value="Willard Fluke">Willard Fluke</option>
+                                
+                                    <option value="Aner Clute">Aner Clute</option>
+                                
+                                    <option value="Lucius Atherton">Lucius Atherton</option>
+                                
+                                    <option value="Homer Clapp">Homer Clapp</option>
+                                
+                                    <option value="Deacon Taylor">Deacon Taylor</option>
+                                
+                                    <option value="Cooney Potter">Cooney Potter</option>
+                                
+                                    <option value="Fiddler Jones">Fiddler Jones</option>
+                                
+                                    <option value="Louise Smith">Louise Smith</option>
+                                
+                                    <option value="Herbert Marshall">Herbert Marshall</option>
+                                
+                                    <option value="Sexsmith the Dentist">Sexsmith the Dentist</option>
+                                
+                                    <option value="A. D. Blood">A. D. Blood</option>
+                                
+                                    <option value="Robert Southey Burke">Robert Southey Burke</option>
+                                
+                                    <option value="Dora Williams">Dora Williams</option>
+                                
+                                    <option value="Mrs. Williams">Mrs. Williams</option>
+                                
+                                    <option value="The Circuit Judge">The Circuit Judge</option>
+                                
+                                    <option value="Blind Jack">Blind Jack</option>
+                                
+                                    <option value="Nancy Knapp">Nancy Knapp</option>
+                                
+                                    <option value="Barry Holden">Barry Holden</option>
+                                
+                                    <option value="State's Attorney Fallas">State's Attorney Fallas</option>
+                                
+                                    <option value="Francis Turner">Francis Turner</option>
+                                
+                                    <option value="Isa Nutter">Isa Nutter</option>
+                                
+                                    <option value="Petit, the Poet">Petit, the Poet</option>
+                                
+                                    <option value="Mrs. Charles Bliss">Mrs. Charles Bliss</option>
+                                
+                                    <option value="Mrs. George Reece">Mrs. George Reece</option>
+                                
+                                    <option value="Rev. Lemuel Wiley">Rev. Lemuel Wiley</option>
+                                
+                                    <option value="Rev. Abner Peet">Rev. Abner Peet</option>
+                                
+                                    <option value="Jefferson Howard">Jefferson Howard</option>
+                                
+                                    <option value="Judge Selah Lively">Judge Selah Lively</option>
+                                
+                                    <option value="Albert Schirding">Albert Schirding</option>
+                                
+                                    <option value="Jonas Keene">Jonas Keene</option>
+                                
+                                    <option value="Washington McNeely">Washington McNeely</option>
+                                
+                                    <option value="Paul McNeely">Paul McNeely</option>
+                                
+                                    <option value="Mary McNeely">Mary McNeely</option>
+                                
+                                    <option value="Daniel M'Cumber">Daniel M'Cumber</option>
+                                
+                                    <option value="Georgine Sand Miner">Georgine Sand Miner</option>
+                                
+                                    <option value="Thomas Rhodes">Thomas Rhodes</option>
+                                
+                                    <option value="Ida Chicken">Ida Chicken</option>
+                                
+                                    <option value="Penniwit, the Artist">Penniwit, the Artist</option>
+                                
+                                    <option value="Jim Brown">Jim Brown</option>
+                                
+                                    <option value="Elsa Wertman">Elsa Wertman</option>
+                                
+                                    <option value="Hamilton Greene">Hamilton Greene</option>
+                                
+                                    <option value="Ernest Hyde">Ernest Hyde</option>
+                                
+                                    <option value="Roger Heston">Roger Heston</option>
+                                
+                                    <option value="Amos Sibley">Amos Sibley</option>
+                                
+                                    <option value="Mrs. Sibley">Mrs. Sibley</option>
+                                
+                                    <option value="Adam Weirauch">Adam Weirauch</option>
+                                
+                                    <option value="John Hancock Otis">John Hancock Otis</option>
+                                
+                                    <option value="Anthony Findlay">Anthony Findlay</option>
+                                
+                                    <option value="The Unknown">The Unknown</option>
+                                
+                                    <option value="Jonathan Swift Somers">Jonathan Swift Somers</option>
+                                
+                                    <option value="Widow McFarlane">Widow McFarlane</option>
+                                
+                                    <option value="Carl Hamblin">Carl Hamblin</option>
+                                
+                                    <option value="Editor Whedon">Editor Whedon</option>
+                                
+                                    <option value="Eugene Carman">Eugene Carman</option>
+                                
+                                    <option value="Clarence Fawcett">Clarence Fawcett</option>
+                                
+                                    <option value="W. Lloyd Garrison Standard">W. Lloyd Garrison Standard</option>
+                                
+                                    <option value="Ralph Rhodes">Ralph Rhodes</option>
+                                
+                                    <option value="Mickey M'Grew">Mickey M'Grew</option>
+                                
+                                    <option value="Oscar Hummel">Oscar Hummel</option>
+                                
+                                    <option value="Roscoe Purkapile">Roscoe Purkapile</option>
+                                
+                                    <option value="Mrs. Purkapile">Mrs. Purkapile</option>
+                                
+                                    <option value="Harmon Whitney">Harmon Whitney</option>
+                                
+                                    <option value="Bert Kessler">Bert Kessler</option>
+                                
+                                    <option value="Lambert Hutchins">Lambert Hutchins</option>
+                                
+                                    <option value="Lillian Stewart">Lillian Stewart</option>
+                                
+                                    <option value="Hortence Robbins">Hortence Robbins</option>
+                                
+                                    <option value="Jacob Godbey">Jacob Godbey</option>
+                                
+                                    <option value="Walter Simmons">Walter Simmons</option>
+                                
+                                    <option value="Tom Beatty">Tom Beatty</option>
+                                
+                                    <option value="Roy Butler">Roy Butler</option>
+                                
+                                    <option value="Jeduthan Hawley">Jeduthan Hawley</option>
+                                
+                                    <option value="Oaks Tutt">Oaks Tutt</option>
+                                
+                                    <option value="Elliott Hawkins">Elliott Hawkins</option>
+                                
+                                    <option value="Ida Frickey">Ida Frickey</option>
+                                
+                                    <option value="Felix Schmidt">Felix Schmidt</option>
+                                
+                                    <option value="Schroeder the Fisherman">Schroeder the Fisherman</option>
+                                
+                                    <option value="E. C. Culbertson">E. C. Culbertson</option>
+                                
+                                    <option value="Shack Dye">Shack Dye</option>
+                                
+                                    <option value="Hildrup Tubbs">Hildrup Tubbs</option>
+                                
+                                    <option value="Granville Calhoun">Granville Calhoun</option>
+                                
+                                    <option value="Henry C. Calhoun">Henry C. Calhoun</option>
+                                
+                                    <option value="Alfred Moir">Alfred Moir</option>
+                                
+                                    <option value="Tom Merritt">Tom Merritt</option>
+                                
+                                    <option value="Mrs. Merritt">Mrs. Merritt</option>
+                                
+                                    <option value="Elmer Karr">Elmer Karr</option>
+                                
+                                    <option value="Edith Conant">Edith Conant</option>
+                                
+                                    <option value="Henry Phipps">Henry Phipps</option>
+                                
+                                    <option value="Harry Wilmans">Harry Wilmans</option>
+                                
+                                    <option value="John Wasson">John Wasson</option>
+                                
+                                    <option value="Many Soldiers">Many Soldiers</option>
+                                
+                                    <option value="Godwin James">Godwin James</option>
+                                
+                                    <option value="Rebecca Wasson">Rebecca Wasson</option>
+                                
+                                    <option value="Hannah Armstrong">Hannah Armstrong</option>
+                                
+                                    <option value="Lucinda Matlock">Lucinda Matlock</option>
+                                
+                                    <option value="Davis Matlock">Davis Matlock</option>
+                                
+                                    <option value="Tennessee Claflin Shope">Tennessee Claflin Shope</option>
+                                
+                                    <option value="Plymouth Rock Joe">Plymouth Rock Joe</option>
+                                
+                                    <option value="Imanuel Ehrenhardt">Imanuel Ehrenhardt</option>
+                                
+                                    <option value="Samuel Gardner">Samuel Gardner</option>
+                                
+                                    <option value="Dow Kritt">Dow Kritt</option>
+                                
+                                    <option value="William Jones">William Jones</option>
+                                
+                                    <option value="Faith Matheny">Faith Matheny</option>
+                                
+                                    <option value="Willie Metcalf">Willie Metcalf</option>
+                                
+                                    <option value="John Ballard">John Ballard</option>
+                                
+                                    <option value="James Garber">James Garber</option>
+                                
+                                    <option value="Lydia Humphrey">Lydia Humphrey</option>
+                                
+                                    <option value="Jeremy Carlisle">Jeremy Carlisle</option>
+                                
+                                    <option value="Aaron Hatfield">Aaron Hatfield</option>
+                                
+                                    <option value="Isaiah Beethoven">Isaiah Beethoven</option>
+                                
+                                    <option value="Webster Ford">Webster Ford</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "blue", "font": {"color": "white"}, "id": "The Hill", "label": "The Hill", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Hod Putt", "label": "Hod Putt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Ollie McGee", "label": "Ollie McGee", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Fletcher McGee", "label": "Fletcher McGee", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Chase Henry", "label": "Chase Henry", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Harry Carey Goodhue", "label": "Harry Carey Goodhue", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Judge Somers", "label": "Judge Somers", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Kinsey Keene", "label": "Kinsey Keene", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Benjamin Pantier", "label": "Benjamin Pantier", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs. Benjamin Pantier", "label": "Mrs. Benjamin Pantier", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Reuben Pantier", "label": "Reuben Pantier", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Emily Sparks", "label": "Emily Sparks", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Trainor, the Druggist", "label": "Trainor, the Druggist", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Daisy Fraser", "label": "Daisy Fraser", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Minerva Jones", "label": "Minerva Jones", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "\u0027Indignation\u0027 Jones", "label": "\u0027Indignation\u0027 Jones", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Doctor Meyers", "label": "Doctor Meyers", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs Meyers", "label": "Mrs Meyers", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "\u0027Butch\u0027 Weldy", "label": "\u0027Butch\u0027 Weldy", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Knowlt Hoheimer", "label": "Knowlt Hoheimer", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Lydia Puckett", "label": "Lydia Puckett", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Frank Drummer", "label": "Frank Drummer", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Hare Drummer", "label": "Hare Drummer", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Doc Hill", "label": "Doc Hill", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Andy The Night-Watch", "label": "Andy The Night-Watch", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Percy Bysshe Shelley", "label": "Percy Bysshe Shelley", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Zenas Witt", "label": "Zenas Witt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "The Town Marshal", "label": "The Town Marshal", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jack McGuire", "label": "Jack McGuire", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Dorcas Gustine", "label": "Dorcas Gustine", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Nicholas Bindle", "label": "Nicholas Bindle", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Margaret Fuller Slack", "label": "Margaret Fuller Slack", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Lois Spears", "label": "Lois Spears", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Justice Arnett", "label": "Justice Arnett", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Willard Fluke", "label": "Willard Fluke", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Aner Clute", "label": "Aner Clute", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Lucius Atherton", "label": "Lucius Atherton", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Homer Clapp", "label": "Homer Clapp", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Deacon Taylor", "label": "Deacon Taylor", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Cooney Potter", "label": "Cooney Potter", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Fiddler Jones", "label": "Fiddler Jones", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Louise Smith", "label": "Louise Smith", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Herbert Marshall", "label": "Herbert Marshall", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Sexsmith the Dentist", "label": "Sexsmith the Dentist", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "A. D. Blood", "label": "A. D. Blood", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Robert Southey Burke", "label": "Robert Southey Burke", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Dora Williams", "label": "Dora Williams", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs. Williams", "label": "Mrs. Williams", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "The Circuit Judge", "label": "The Circuit Judge", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Blind Jack", "label": "Blind Jack", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Nancy Knapp", "label": "Nancy Knapp", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Barry Holden", "label": "Barry Holden", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "State\u0027s Attorney Fallas", "label": "State\u0027s Attorney Fallas", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Francis Turner", "label": "Francis Turner", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Isa Nutter", "label": "Isa Nutter", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Petit, the Poet", "label": "Petit, the Poet", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs. Charles Bliss", "label": "Mrs. Charles Bliss", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs. George Reece", "label": "Mrs. George Reece", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Rev. Lemuel Wiley", "label": "Rev. Lemuel Wiley", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Rev. Abner Peet", "label": "Rev. Abner Peet", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jefferson Howard", "label": "Jefferson Howard", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Judge Selah Lively", "label": "Judge Selah Lively", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Albert Schirding", "label": "Albert Schirding", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jonas Keene", "label": "Jonas Keene", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Washington McNeely", "label": "Washington McNeely", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Paul McNeely", "label": "Paul McNeely", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mary McNeely", "label": "Mary McNeely", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Daniel M\u0027Cumber", "label": "Daniel M\u0027Cumber", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Georgine Sand Miner", "label": "Georgine Sand Miner", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Thomas Rhodes", "label": "Thomas Rhodes", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Ida Chicken", "label": "Ida Chicken", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Penniwit, the Artist", "label": "Penniwit, the Artist", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jim Brown", "label": "Jim Brown", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Elsa Wertman", "label": "Elsa Wertman", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Hamilton Greene", "label": "Hamilton Greene", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Ernest Hyde", "label": "Ernest Hyde", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Roger Heston", "label": "Roger Heston", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Amos Sibley", "label": "Amos Sibley", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs. Sibley", "label": "Mrs. Sibley", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Adam Weirauch", "label": "Adam Weirauch", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "John Hancock Otis", "label": "John Hancock Otis", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Anthony Findlay", "label": "Anthony Findlay", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "The Unknown", "label": "The Unknown", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jonathan Swift Somers", "label": "Jonathan Swift Somers", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Widow McFarlane", "label": "Widow McFarlane", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Carl Hamblin", "label": "Carl Hamblin", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Editor Whedon", "label": "Editor Whedon", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Eugene Carman", "label": "Eugene Carman", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Clarence Fawcett", "label": "Clarence Fawcett", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "W. Lloyd Garrison Standard", "label": "W. Lloyd Garrison Standard", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Ralph Rhodes", "label": "Ralph Rhodes", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mickey M\u0027Grew", "label": "Mickey M\u0027Grew", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Oscar Hummel", "label": "Oscar Hummel", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Roscoe Purkapile", "label": "Roscoe Purkapile", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs. Purkapile", "label": "Mrs. Purkapile", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Harmon Whitney", "label": "Harmon Whitney", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Bert Kessler", "label": "Bert Kessler", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Lambert Hutchins", "label": "Lambert Hutchins", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Lillian Stewart", "label": "Lillian Stewart", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Hortence Robbins", "label": "Hortence Robbins", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jacob Godbey", "label": "Jacob Godbey", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Walter Simmons", "label": "Walter Simmons", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Tom Beatty", "label": "Tom Beatty", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Roy Butler", "label": "Roy Butler", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jeduthan Hawley", "label": "Jeduthan Hawley", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Oaks Tutt", "label": "Oaks Tutt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Elliott Hawkins", "label": "Elliott Hawkins", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Ida Frickey", "label": "Ida Frickey", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Felix Schmidt", "label": "Felix Schmidt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Schroeder the Fisherman", "label": "Schroeder the Fisherman", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "E. C. Culbertson", "label": "E. C. Culbertson", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Shack Dye", "label": "Shack Dye", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Hildrup Tubbs", "label": "Hildrup Tubbs", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Granville Calhoun", "label": "Granville Calhoun", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Henry C. Calhoun", "label": "Henry C. Calhoun", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Alfred Moir", "label": "Alfred Moir", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Tom Merritt", "label": "Tom Merritt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Mrs. Merritt", "label": "Mrs. Merritt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Elmer Karr", "label": "Elmer Karr", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Edith Conant", "label": "Edith Conant", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Henry Phipps", "label": "Henry Phipps", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Harry Wilmans", "label": "Harry Wilmans", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "John Wasson", "label": "John Wasson", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Many Soldiers", "label": "Many Soldiers", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Godwin James", "label": "Godwin James", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Rebecca Wasson", "label": "Rebecca Wasson", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Hannah Armstrong", "label": "Hannah Armstrong", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Lucinda Matlock", "label": "Lucinda Matlock", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Davis Matlock", "label": "Davis Matlock", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Tennessee Claflin Shope", "label": "Tennessee Claflin Shope", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Plymouth Rock Joe", "label": "Plymouth Rock Joe", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Imanuel Ehrenhardt", "label": "Imanuel Ehrenhardt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Samuel Gardner", "label": "Samuel Gardner", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Dow Kritt", "label": "Dow Kritt", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "William Jones", "label": "William Jones", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Faith Matheny", "label": "Faith Matheny", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Willie Metcalf", "label": "Willie Metcalf", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "John Ballard", "label": "John Ballard", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "James Garber", "label": "James Garber", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Lydia Humphrey", "label": "Lydia Humphrey", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Jeremy Carlisle", "label": "Jeremy Carlisle", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Aaron Hatfield", "label": "Aaron Hatfield", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Isaiah Beethoven", "label": "Isaiah Beethoven", "shape": "dot"}, {"color": "blue", "font": {"color": "white"}, "id": "Webster Ford", "label": "Webster Ford", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "The Hill", "to": "Fiddler Jones"}, {"arrows": "to", "from": "Ollie McGee", "to": "Fletcher McGee"}, {"arrows": "to", "from": "Fletcher McGee", "to": "Ollie McGee"}, {"arrows": "to", "from": "Chase Henry", "to": "Nicholas Bindle"}, {"arrows": "to", "from": "Harry Carey Goodhue", "to": "Chase Henry"}, {"arrows": "to", "from": "Judge Somers", "to": "Chase Henry"}, {"arrows": "to", "from": "Kinsey Keene", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Kinsey Keene", "to": "Editor Whedon"}, {"arrows": "to", "from": "Kinsey Keene", "to": "Rev. Abner Peet"}, {"arrows": "to", "from": "Kinsey Keene", "to": "A. D. Blood"}, {"arrows": "to", "from": "Kinsey Keene", "to": "Mrs. Benjamin Pantier"}, {"arrows": "to", "from": "Benjamin Pantier", "to": "Mrs. Benjamin Pantier"}, {"arrows": "to", "from": "Mrs. Benjamin Pantier", "to": "Benjamin Pantier"}, {"arrows": "to", "from": "Reuben Pantier", "to": "Emily Sparks"}, {"arrows": "to", "from": "Reuben Pantier", "to": "Benjamin Pantier"}, {"arrows": "to", "from": "Reuben Pantier", "to": "Mrs. Benjamin Pantier"}, {"arrows": "to", "from": "Reuben Pantier", "to": "Dora Williams"}, {"arrows": "to", "from": "Reuben Pantier", "to": "Mrs. Williams"}, {"arrows": "to", "from": "Emily Sparks", "to": "Reuben Pantier"}, {"arrows": "to", "from": "Trainor, the Druggist", "to": "Benjamin Pantier"}, {"arrows": "to", "from": "Trainor, the Druggist", "to": "Mrs. Benjamin Pantier"}, {"arrows": "to", "from": "Trainor, the Druggist", "to": "Reuben Pantier"}, {"arrows": "to", "from": "Daisy Fraser", "to": "Editor Whedon"}, {"arrows": "to", "from": "Daisy Fraser", "to": "Rev. Abner Peet"}, {"arrows": "to", "from": "Daisy Fraser", "to": "Amos Sibley"}, {"arrows": "to", "from": "Daisy Fraser", "to": "Justice Arnett"}, {"arrows": "to", "from": "Daisy Fraser", "to": "The Circuit Judge"}, {"arrows": "to", "from": "Minerva Jones", "to": "\u0027Butch\u0027 Weldy"}, {"arrows": "to", "from": "Minerva Jones", "to": "Doctor Meyers"}, {"arrows": "to", "from": "\u0027Indignation\u0027 Jones", "to": "Minerva Jones"}, {"arrows": "to", "from": "Doctor Meyers", "to": "Minerva Jones"}, {"arrows": "to", "from": "Doctor Meyers", "to": "Doc Hill"}, {"arrows": "to", "from": "Doctor Meyers", "to": "Mrs Meyers"}, {"arrows": "to", "from": "Mrs Meyers", "to": "Doctor Meyers"}, {"arrows": "to", "from": "Mrs Meyers", "to": "Minerva Jones"}, {"arrows": "to", "from": "\u0027Butch\u0027 Weldy", "to": "Blind Jack"}, {"arrows": "to", "from": "\u0027Butch\u0027 Weldy", "to": "The Circuit Judge"}, {"arrows": "to", "from": "\u0027Butch\u0027 Weldy", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "\u0027Butch\u0027 Weldy", "to": "Ralph Rhodes"}, {"arrows": "to", "from": "Lydia Puckett", "to": "Lucius Atherton"}, {"arrows": "to", "from": "Lydia Puckett", "to": "Knowlt Hoheimer"}, {"arrows": "to", "from": "Lydia Puckett", "to": "Justice Arnett"}, {"arrows": "to", "from": "Hare Drummer", "to": "Aaron Hatfield"}, {"arrows": "to", "from": "Andy The Night-Watch", "to": "Doc Hill"}, {"arrows": "to", "from": "Percy Bysshe Shelley", "to": "Bert Kessler"}, {"arrows": "to", "from": "Zenas Witt", "to": "Frank Drummer"}, {"arrows": "to", "from": "The Town Marshal", "to": "Jack McGuire"}, {"arrows": "to", "from": "Jack McGuire", "to": "The Town Marshal"}, {"arrows": "to", "from": "Jack McGuire", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Jack McGuire", "to": "Kinsey Keene"}, {"arrows": "to", "from": "Nicholas Bindle", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Margaret Fuller Slack", "to": "Penniwit, the Artist"}, {"arrows": "to", "from": "Lois Spears", "to": "Willard Fluke"}, {"arrows": "to", "from": "Justice Arnett", "to": "\u0027Butch\u0027 Weldy"}, {"arrows": "to", "from": "Willard Fluke", "to": "Lois Spears"}, {"arrows": "to", "from": "Aner Clute", "to": "Lucius Atherton"}, {"arrows": "to", "from": "Homer Clapp", "to": "Aner Clute"}, {"arrows": "to", "from": "Homer Clapp", "to": "Lucius Atherton"}, {"arrows": "to", "from": "Deacon Taylor", "to": "Trainor, the Druggist"}, {"arrows": "to", "from": "Fiddler Jones", "to": "Cooney Potter"}, {"arrows": "to", "from": "Louise Smith", "to": "Herbert Marshall"}, {"arrows": "to", "from": "Herbert Marshall", "to": "Louise Smith"}, {"arrows": "to", "from": "Sexsmith the Dentist", "to": "Daisy Fraser"}, {"arrows": "to", "from": "Sexsmith the Dentist", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "A. D. Blood", "to": "Daisy Fraser"}, {"arrows": "to", "from": "A. D. Blood", "to": "Justice Arnett"}, {"arrows": "to", "from": "A. D. Blood", "to": "Reuben Pantier"}, {"arrows": "to", "from": "A. D. Blood", "to": "Benjamin Pantier"}, {"arrows": "to", "from": "A. D. Blood", "to": "Dora Williams"}, {"arrows": "to", "from": "Robert Southey Burke", "to": "A. D. Blood"}, {"arrows": "to", "from": "Dora Williams", "to": "Reuben Pantier"}, {"arrows": "to", "from": "Mrs. Williams", "to": "Dora Williams"}, {"arrows": "to", "from": "The Circuit Judge", "to": "Hod Putt"}, {"arrows": "to", "from": "Blind Jack", "to": "Jack McGuire"}, {"arrows": "to", "from": "Blind Jack", "to": "\u0027Butch\u0027 Weldy"}, {"arrows": "to", "from": "Barry Holden", "to": "Nancy Knapp"}, {"arrows": "to", "from": "Barry Holden", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "State\u0027s Attorney Fallas", "to": "Barry Holden"}, {"arrows": "to", "from": "Isa Nutter", "to": "Doctor Meyers"}, {"arrows": "to", "from": "Isa Nutter", "to": "Doc Hill"}, {"arrows": "to", "from": "Mrs. Charles Bliss", "to": "Rev. Lemuel Wiley"}, {"arrows": "to", "from": "Mrs. Charles Bliss", "to": "Judge Somers"}, {"arrows": "to", "from": "Mrs. George Reece", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Mrs. George Reece", "to": "Ralph Rhodes"}, {"arrows": "to", "from": "Rev. Lemuel Wiley", "to": "Mrs. Charles Bliss"}, {"arrows": "to", "from": "Judge Selah Lively", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Judge Selah Lively", "to": "Kinsey Keene"}, {"arrows": "to", "from": "Judge Selah Lively", "to": "Jefferson Howard"}, {"arrows": "to", "from": "Judge Selah Lively", "to": "Harmon Whitney"}, {"arrows": "to", "from": "Albert Schirding", "to": "Jonas Keene"}, {"arrows": "to", "from": "Jonas Keene", "to": "Albert Schirding"}, {"arrows": "to", "from": "Washington McNeely", "to": "Paul McNeely"}, {"arrows": "to", "from": "Washington McNeely", "to": "Mary McNeely"}, {"arrows": "to", "from": "Paul McNeely", "to": "Washington McNeely"}, {"arrows": "to", "from": "Mary McNeely", "to": "Washington McNeely"}, {"arrows": "to", "from": "Daniel M\u0027Cumber", "to": "Mary McNeely"}, {"arrows": "to", "from": "Daniel M\u0027Cumber", "to": "Georgine Sand Miner"}, {"arrows": "to", "from": "Georgine Sand Miner", "to": "Daniel M\u0027Cumber"}, {"arrows": "to", "from": "Thomas Rhodes", "to": "Margaret Fuller Slack"}, {"arrows": "to", "from": "Thomas Rhodes", "to": "Petit, the Poet"}, {"arrows": "to", "from": "Thomas Rhodes", "to": "Tennessee Claflin Shope"}, {"arrows": "to", "from": "Ida Chicken", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Penniwit, the Artist", "to": "Judge Somers"}, {"arrows": "to", "from": "Jim Brown", "to": "Rev. Abner Peet"}, {"arrows": "to", "from": "Jim Brown", "to": "Benjamin Pantier"}, {"arrows": "to", "from": "Jim Brown", "to": "Mrs. Benjamin Pantier"}, {"arrows": "to", "from": "Jim Brown", "to": "Washington McNeely"}, {"arrows": "to", "from": "Jim Brown", "to": "Fiddler Jones"}, {"arrows": "to", "from": "Elsa Wertman", "to": "Hamilton Greene"}, {"arrows": "to", "from": "Roger Heston", "to": "Ernest Hyde"}, {"arrows": "to", "from": "Amos Sibley", "to": "Mrs. Sibley"}, {"arrows": "to", "from": "Adam Weirauch", "to": "Editor Whedon"}, {"arrows": "to", "from": "John Hancock Otis", "to": "Anthony Findlay"}, {"arrows": "to", "from": "The Unknown", "to": "Aaron Hatfield"}, {"arrows": "to", "from": "Eugene Carman", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Eugene Carman", "to": "Rev. Abner Peet"}, {"arrows": "to", "from": "Clarence Fawcett", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Clarence Fawcett", "to": "Eugene Carman"}, {"arrows": "to", "from": "W. Lloyd Garrison Standard", "to": "Kinsey Keene"}, {"arrows": "to", "from": "Ralph Rhodes", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Oscar Hummel", "to": "Fiddler Jones"}, {"arrows": "to", "from": "Oscar Hummel", "to": "A. D. Blood"}, {"arrows": "to", "from": "Roscoe Purkapile", "to": "Mrs. Purkapile"}, {"arrows": "to", "from": "Mrs. Purkapile", "to": "Mrs. Williams"}, {"arrows": "to", "from": "Mrs. Purkapile", "to": "Roscoe Purkapile"}, {"arrows": "to", "from": "Lambert Hutchins", "to": "Lillian Stewart"}, {"arrows": "to", "from": "Lillian Stewart", "to": "Lambert Hutchins"}, {"arrows": "to", "from": "Jacob Godbey", "to": "Benjamin Pantier"}, {"arrows": "to", "from": "Tom Beatty", "to": "W. Lloyd Garrison Standard"}, {"arrows": "to", "from": "Tom Beatty", "to": "Kinsey Keene"}, {"arrows": "to", "from": "Tom Beatty", "to": "Harmon Whitney"}, {"arrows": "to", "from": "Roy Butler", "to": "\u0027Butch\u0027 Weldy"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Chase Henry"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Edith Conant"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Jonathan Swift Somers"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Willie Metcalf"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Carl Hamblin"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Francis Turner"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Editor Whedon"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Widow McFarlane"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Emily Sparks"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Barry Holden"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Oscar Hummel"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Davis Matlock"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Fiddler Jones"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Faith Matheny"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Dorcas Gustine"}, {"arrows": "to", "from": "Jeduthan Hawley", "to": "Daisy Fraser"}, {"arrows": "to", "from": "Oaks Tutt", "to": "Jonathan Swift Somers"}, {"arrows": "to", "from": "Ida Frickey", "to": "Washington McNeely"}, {"arrows": "to", "from": "Felix Schmidt", "to": "Harmon Whitney"}, {"arrows": "to", "from": "Schroeder the Fisherman", "to": "Felix Schmidt"}, {"arrows": "to", "from": "E. C. Culbertson", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "E. C. Culbertson", "to": "Editor Whedon"}, {"arrows": "to", "from": "Shack Dye", "to": "Walter Simmons"}, {"arrows": "to", "from": "Hildrup Tubbs", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Granville Calhoun", "to": "Henry C. Calhoun"}, {"arrows": "to", "from": "Henry C. Calhoun", "to": "Granville Calhoun"}, {"arrows": "to", "from": "Alfred Moir", "to": "\u0027Indignation\u0027 Jones"}, {"arrows": "to", "from": "Alfred Moir", "to": "Willard Fluke"}, {"arrows": "to", "from": "Alfred Moir", "to": "Jack McGuire"}, {"arrows": "to", "from": "Tom Merritt", "to": "Mrs. Merritt"}, {"arrows": "to", "from": "Tom Merritt", "to": "Elmer Karr"}, {"arrows": "to", "from": "Mrs. Merritt", "to": "Tom Merritt"}, {"arrows": "to", "from": "Mrs. Merritt", "to": "Elmer Karr"}, {"arrows": "to", "from": "Elmer Karr", "to": "Tom Merritt"}, {"arrows": "to", "from": "Henry Phipps", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Henry Phipps", "to": "Doctor Meyers"}, {"arrows": "to", "from": "Harry Wilmans", "to": "Henry Phipps"}, {"arrows": "to", "from": "John Wasson", "to": "Harry Wilmans"}, {"arrows": "to", "from": "John Wasson", "to": "Rebecca Wasson"}, {"arrows": "to", "from": "Many Soldiers", "to": "Shack Dye"}, {"arrows": "to", "from": "Godwin James", "to": "Harry Wilmans"}, {"arrows": "to", "from": "Rebecca Wasson", "to": "John Wasson"}, {"arrows": "to", "from": "Hannah Armstrong", "to": "James Garber"}, {"arrows": "to", "from": "Lucinda Matlock", "to": "Davis Matlock"}, {"arrows": "to", "from": "Tennessee Claflin Shope", "to": "Rev. Abner Peet"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Thomas Rhodes"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Elliott Hawkins"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Minerva Jones"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Lucius Atherton"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Aner Clute"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Mrs. Benjamin Pantier"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Margaret Fuller Slack"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Tennessee Claflin Shope"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Hortence Robbins"}, {"arrows": "to", "from": "Plymouth Rock Joe", "to": "Isaiah Beethoven"}, {"arrows": "to", "from": "Imanuel Ehrenhardt", "to": "William Jones"}, {"arrows": "to", "from": "Imanuel Ehrenhardt", "to": "Judge Somers"}, {"arrows": "to", "from": "Dow Kritt", "to": "Samuel Gardner"}, {"arrows": "to", "from": "Willie Metcalf", "to": "Doctor Meyers"}, {"arrows": "to", "from": "Willie Metcalf", "to": "Jack McGuire"}, {"arrows": "to", "from": "John Ballard", "to": "Lydia Humphrey"}, {"arrows": "to", "from": "Jeremy Carlisle", "to": "Penniwit, the Artist"}, {"arrows": "to", "from": "Webster Ford", "to": "Mickey M\u0027Grew"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
