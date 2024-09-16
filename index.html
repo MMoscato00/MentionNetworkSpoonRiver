@@ -6,12 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Spoon River Anthology Mention Network</title>
 <style>
-    /* CSS interno */
     body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        height: 100%; /* Ensures full height */
+        height: 100%; 
     }
 
     header {
@@ -42,10 +41,10 @@
     }
 
     .container {
-        background-color: #FFA500; /* Arancione */
+        background-color: #FFA500; 
         padding: 20px;
         text-align: center;
-        min-height: calc(100vh - 130px); /* Adjust height to fill the screen */
+        min-height: calc(100vh - 130px); 
         box-sizing: border-box;
     }
 
@@ -56,6 +55,7 @@
     .container p {
         font-size: 1.2rem;
         margin: 20px 0;
+        text-align: justify; 
     }
 
     .iframe-container {
@@ -63,13 +63,12 @@
     }
 
     footer {
-        margin-top: 20px; /* Adjust this for better spacing */
+        margin-top: 20px; 
         text-align: right;
         font-size: 0.8rem;
         padding-right: 20px;
     }
 
-    /* Media query per schermi piccoli (telefoni) */
     @media (max-width: 768px) {
         nav a {
             padding: 10px;
@@ -84,14 +83,12 @@
             font-size: 1rem;
         }
 
-        /* Adattare l'iframe */
         .iframe-container iframe {
             width: 100%;
             height: 300px;
         }
     }
 
-    /* Media query per schermi molto piccoli (telefoni più compatti) */
     @media (max-width: 480px) {
         .container h1 {
             font-size: 1.5rem;
@@ -101,7 +98,6 @@
             font-size: 0.9rem;
         }
 
-        /* Ulteriore ridimensionamento dell'iframe */
         .iframe-container iframe {
             width: 100%;
             height: 250px;
@@ -111,7 +107,6 @@
 </head>
 <body>
 
-    <!-- Header e Navigazione -->
     <header>
         <h1>Spoon River Anthology Mention Network</h1>
     </header>
@@ -123,7 +118,6 @@
         <a href="about.html">About me</a>
     </nav>
 
-    <!-- Contenuto Home -->
     <div class="container">
         <h1>Spoon River Anthology Mention Network</h1>
         <p>
@@ -132,7 +126,6 @@
             The Interpoetic Narrative of Spoon River Anthology”
         </p>
 
-        <!-- Grafo PyVis -->
         <div class="iframe-container">
             <iframe src="mygraph.html" width="1200" height="700" frameborder="0"></iframe>
         </div>
